@@ -1,0 +1,21 @@
+[workspace]
+resolver = "2"
+
+members = ["variant_extraction", "variant_extraction_tests", "xtask"]
+
+[workspace.dependencies]
+
+[profile.release]
+opt-level = 3
+codegen-units = 1
+lto = true
+strip = true
+
+# Enable a small amount of optimization in debug mode
+[profile.dev]
+lto = "off"
+opt-level = 1
+
+# Enable high optimizations for dependencies
+[profile.dev.package."*"]
+opt-level = 2
