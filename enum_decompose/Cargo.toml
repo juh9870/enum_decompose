@@ -1,7 +1,10 @@
 [package]
-name = "variant_extraction"
-version = "0.1.0"
+name = "enum_decompose"
+version = "1.0.0"
 edition = "2021"
+license = "MIT"
+description = "Converting enum variants into structs"
+keywords = ["macro"]
 
 [lib]
 proc-macro = true

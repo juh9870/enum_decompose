@@ -1,13 +1,13 @@
 #![allow(dead_code)]
-//! Tests for `extract_variants` macro
+//! Tests for `decompose` macro
 //!
 //! # Tests for compile failure
 //!
 //! ## Non-public enum
 //! ```compile_fail
 //! mod inner {
-//!     # use variant_extraction::extract_variants;
-//!     #[extract_variants]
+//!     # use enum_decompose::decompose;
+//!     #[decompose]
 //!     #[derive(Debug, Clone)]
 //!     enum Invisible {
 //!         A(usize),
@@ -23,8 +23,8 @@
 //! ## Visibility modifier
 //! ```compile_fail
 //! mod inner {
-//!     # use variant_extraction::extract_variants;
-//!     #[extract_variants(vis="")]
+//!     # use enum_decompose::decompose;
+//!     #[decompose(vis="")]
 //!     #[derive(Debug, Clone)]
 //!     pub enum Invisible {
 //!         A(usize),
@@ -40,12 +40,12 @@
 //! ## Visibility modifier on the individual field
 //! ```compile_fail
 //! mod inner {
-//!     # use variant_extraction::extract_variants;
-//!     #[extract_variants]
+//!     # use enum_decompose::decompose;
+//!     #[decompose]
 //!     #[derive(Debug, Clone)]
 //!     pub enum Invisible {
 //!         A(usize),
-//!         #[extract_variants(vis="")]
+//!         #[decompose(vis="")]
 //!         B(usize),
 //!     }
 //!     fn check_a(_arg: InvisibleA) {}
@@ -58,12 +58,12 @@
 //! ## Visibility modifier on the individual field and the struct
 //! ```compile_fail
 //! mod inner {
-//!     # use variant_extraction::extract_variants;
-//!     #[extract_variants(vis="pub")]
+//!     # use enum_decompose::decompose;
+//!     #[decompose(vis="pub")]
 //!     #[derive(Debug, Clone)]
 //!     enum Invisible {
 //!         A(usize),
-//!         #[extract_variants(vis="")]
+//!         #[decompose(vis="")]
 //!         B(usize),
 //!     }
 //!     fn check_a(_arg: InvisibleA) {}
@@ -76,8 +76,8 @@
 //! ## Fields visibility
 //! ```compile_fail
 //! mod inner {
-//!     # use variant_extraction::extract_variants;
-//!     #[extract_variants(fields_vis="")]
+//!     # use enum_decompose::decompose;
+//!     #[decompose(fields_vis="")]
 //!     #[derive(Debug, Clone)]
 //!     pub enum Invisible {
 //!         A(usize),
@@ -97,12 +97,12 @@
 //! ## Individual fields visibility
 //! ```compile_fail
 //! mod inner {
-//!     # use variant_extraction::extract_variants;
-//!     #[extract_variants()]
+//!     # use enum_decompose::decompose;
+//!     #[decompose()]
 //!     #[derive(Debug, Clone)]
 //!     pub enum Invisible {
 //!         A(usize),
-//!         #[extract_variants(fields_vis="")]
+//!         #[decompose(fields_vis="")]
 //!         B(usize),
 //!     }
 //!     fn check_a(_arg: InvisibleA) {}
@@ -118,12 +118,12 @@
 //!
 //! ## Skipped field
 //! ```compile_fail
-//! # use variant_extraction::extract_variants;
-//! #[extract_variants]
+//! # use enum_decompose::decompose;
+//! #[decompose]
 //! #[derive(Debug, Clone)]
 //! enum FieldSkip {
 //!     A(usize),
-//!     #[extract_variants(skip)]
+//!     #[decompose(skip)]
 //!     B(usize),
 //! }
 //! fn success_a(_arg: FieldSkipA) {}
@@ -132,8 +132,8 @@
 //!
 //! ## Skipping unit fields
 //! ```compile_fail
-//! # use variant_extraction::extract_variants;
-//! #[extract_variants]
+//! # use enum_decompose::decompose;
+//! #[decompose]
 //! #[derive(Debug, Clone)]
 //! enum FieldSkip {
 //!     A(usize),
@@ -145,8 +145,8 @@
 //!
 //! ## Skipping empty tuple fields
 //! ```compile_fail
-//! # use variant_extraction::extract_variants;
-//! #[extract_variants]
+//! # use enum_decompose::decompose;
+//! #[decompose]
 //! #[derive(Debug, Clone)]
 //! enum FieldSkip {
 //!     A(usize),
@@ -158,8 +158,8 @@
 //!
 //! ## Skipping empty struct fields
 //! ```compile_fail
-//! # use variant_extraction::extract_variants;
-//! #[extract_variants]
+//! # use enum_decompose::decompose;
+//! #[decompose]
 //! #[derive(Debug, Clone)]
 //! enum FieldSkip {
 //!     A(usize),
@@ -169,13 +169,13 @@
 //! fn fail_b(_arg: FieldSkipB) {}
 //! ```
 
+use enum_decompose::decompose;
 use std::fmt::Debug;
-use variant_extraction::extract_variants;
 
 mod visibility_test {
     mod inner {
-        use variant_extraction::extract_variants;
-        #[extract_variants]
+        use enum_decompose::decompose;
+        #[decompose]
         #[derive(Debug, Clone)]
         pub enum Invisible {
             A(usize),
@@ -190,8 +190,8 @@ mod visibility_test {
 
 mod forced_visibility_test {
     mod inner {
-        use variant_extraction::extract_variants;
-        #[extract_variants(vis = "pub")]
+        use enum_decompose::decompose;
+        #[decompose(vis = "pub")]
         #[derive(Debug, Clone)]
         enum Invisible {
             A(usize),
@@ -206,12 +206,12 @@ mod forced_visibility_test {
 
 mod partial_forced_visibility_test {
     mod inner {
-        use variant_extraction::extract_variants;
-        #[extract_variants(vis = "pub")]
+        use enum_decompose::decompose;
+        #[decompose(vis = "pub")]
         #[derive(Debug, Clone)]
         enum Invisible {
             A(usize),
-            #[extract_variants(vis = "")]
+            #[decompose(vis = "")]
             B(usize),
         }
         fn check_a(_arg: InvisibleA) {}
@@ -222,12 +222,12 @@ mod partial_forced_visibility_test {
 
 mod partial_visibility_test {
     mod inner {
-        use variant_extraction::extract_variants;
-        #[extract_variants]
+        use enum_decompose::decompose;
+        #[decompose]
         #[derive(Debug, Clone)]
         pub enum Invisible {
             A(usize),
-            #[extract_variants(vis = "")]
+            #[decompose(vis = "")]
             B(usize),
         }
         fn check_a(_arg: InvisibleA) {}
@@ -236,51 +236,51 @@ mod partial_visibility_test {
     fn success_a(_arg: inner::InvisibleA) {}
 }
 
-#[extract_variants]
+#[decompose]
 #[derive(Debug, Clone, Eq, PartialEq)]
 enum Test {
     VariantA(usize, i64),
 }
 
-#[extract_variants(derive = "Debug, Clone, Default")]
+#[decompose(derive = "Debug, Clone, Default")]
 #[derive(Debug, Clone)]
 enum TestDerive {
     VariantA(usize, f64),
-    #[extract_variants(derive = "Debug, Clone, Default, Eq, PartialEq")]
+    #[decompose(derive = "Debug, Clone, Default, Eq, PartialEq")]
     VariantB {
         value: String,
     },
 }
 
-#[extract_variants]
+#[decompose]
 #[derive(Debug, Clone)]
 enum TestDeriveFieldOnly {
     VariantA(usize, f64),
-    #[extract_variants(derive = "Debug, Clone, Default")]
+    #[decompose(derive = "Debug, Clone, Default")]
     VariantB {
         value: String,
     },
 }
 
-#[extract_variants(prefix = "Renamed", suffix = "Struct")]
+#[decompose(prefix = "Renamed", suffix = "Struct")]
 #[derive(Debug, Clone)]
 enum TestRename {
     VariantA(usize, i64),
-    #[extract_variants(rename = "ForceRenamed")]
+    #[decompose(rename = "ForceRenamed")]
     VariantB {
         value: String,
     },
 }
 
-#[extract_variants]
+#[decompose]
 #[derive(Debug, Clone)]
 enum TestFieldSkip {
     VariantA(usize),
-    #[extract_variants(skip)]
+    #[decompose(skip)]
     VariantB(usize),
 }
 
-#[extract_variants(skip_empty = false)]
+#[decompose(skip_empty = false)]
 #[derive(Debug, Clone)]
 enum TestEmptyFieldNoSkip {
     VariantA(usize),

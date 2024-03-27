@@ -1,3 +1,4 @@
+#![doc = include_str!("../../README.md")]
 use darling::ast::NestedMeta;
 use darling::{FromAttributes, FromMeta};
 use proc_macro::TokenStream;
@@ -27,7 +28,7 @@ struct MacroArgs {
 }
 
 #[derive(Debug, FromAttributes)]
-#[darling(attributes(extract_variants))]
+#[darling(attributes(decompose))]
 struct FieldArgs {
     /// Skips the field
     #[darling(default)]
@@ -43,8 +44,12 @@ struct FieldArgs {
     fields_vis: Option<Visibility>,
 }
 
+/// Annotating enum with an `#[decompose]` attribute will convert all
+/// non-unit variants into newtype variants by emitting variants as individual structs.
+///
+/// See module-level documentation for details
 #[proc_macro_attribute]
-pub fn extract_variants(args: TokenStream, input: TokenStream) -> TokenStream {
+pub fn decompose(args: TokenStream, input: TokenStream) -> TokenStream {
     // Parse attribute input
     let attr_args = match NestedMeta::parse_meta_list(args.into()) {
         Ok(args) => args,
@@ -99,7 +104,7 @@ pub fn extract_variants(args: TokenStream, input: TokenStream) -> TokenStream {
         // Consume attributes
         variant
             .attrs
-            .retain(|attr| !attr.path().is_ident("extract_variants"));
+            .retain(|attr| !attr.path().is_ident("decompose"));
 
         if field_args.skip {
             continue;
@@ -176,7 +181,7 @@ pub fn extract_variants(args: TokenStream, input: TokenStream) -> TokenStream {
 
         impls.push(quote_spanned! { variant.span()=>
             #[automatically_derived]
-            impl From<#struct_ident> for #enum_ident {
+            impl core::convert::From<#struct_ident> for #enum_ident {
                 fn from(item: #struct_ident) -> Self {
                     Self::#variant_ident(item)
                 }

@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
 
-members = ["variant_extraction", "variant_extraction_tests", "xtask"]
+members = ["enum_decompose", "enum_decompose_tests", "xtask"]
 
 [workspace.dependencies]
 

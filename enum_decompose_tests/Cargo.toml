@@ -1,8 +1,8 @@
 [package]
-name = "variant_extraction_tests"
+name = "enum_decompose_tests"
 version = "0.1.0"
 edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-variant_extraction = { path = "../variant_extraction" }
+enum_decompose = { path = "../enum_decompose" }

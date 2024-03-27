@@ -1,8 +1,8 @@
-use variant_extraction::extract_variants;
+use enum_decompose::decompose;
 
 mod tests;
 
-#[extract_variants]
+#[decompose]
 #[derive(Debug, Clone)]
 enum Test1 {
     A,
